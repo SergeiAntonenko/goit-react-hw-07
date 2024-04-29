@@ -1,17 +1,25 @@
 import Contact from "../Contact/Contact.jsx";
 import css from "./ContactList.module.css";
 import { useSelector } from "react-redux";
-import { selectContacts, selectNameFilter } from "../../redux/selector.js";
+import { selectIsLoading } from "../../redux/contactsSlice.js";
+import { ThreeCircles } from "react-loader-spinner";
+import { selectFilteredContacts } from "../../redux/contactsSlice.js";
 
+const loader = (
+  <ThreeCircles
+    visible={true}
+    height="100"
+    width="100"
+    color="#032287"
+    ariaLabel="three-circles-loading"
+    wrapperStyle={{}}
+    wrapperClass="wrapper"
+  />
+);
 const ContactList = () => {
-  const contacts = useSelector(selectContacts);
-  const searchValue = useSelector(selectNameFilter);
+  const isLoading = useSelector(selectIsLoading);
 
-  const filteredContacts = contacts.items.filter(
-    (contact) =>
-      contact.name.toLowerCase().includes(searchValue.name.toLowerCase()) ||
-      contact.number.toString().includes(searchValue.name.toString())
-  );
+  const filteredContacts = useSelector(selectFilteredContacts);
 
   return (
     <ul className={css["contacts-list"]}>
@@ -20,6 +28,7 @@ const ContactList = () => {
           <Contact data={contact} />
         </li>
       ))}
+      {isLoading && loader}
     </ul>
   );
 };
